@@ -110,8 +110,8 @@ app.put('/image', (req, res) => {
 // })
 
 app.get('/', (req, res) => {
-  res.send(`it's alive, it's ALIVE!!!`))
-}
+  res.send(`it's alive, it's ALIVE!!!`)}
+)
 
 app.post('/signin', signin.handleSignin(knex, bcrypt)) // Signin and register have different syntax of passing function arguments
 
