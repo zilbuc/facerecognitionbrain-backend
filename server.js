@@ -5,10 +5,13 @@ const cors = require('cors');
 const knex = require('knex')({
   client: 'pg',
   connection: {
-    host: 'postgresql-solid-63643',
-    user: 'postgres',
-    password: '',
-    database: 'skulldb'
+    host: process.env.DATABASE_URL,
+    ssl: true
+    // For localhost:
+    // host: '127.0.0.1'
+    // user: 'postgres',
+    // password: '',
+    // database: 'skulldb'
   }
 });
 const register = require('./controllers/register')
