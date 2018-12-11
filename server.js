@@ -109,6 +109,10 @@ app.put('/image', (req, res) => {
 //   res.send(database.users); // demo check
 // })
 
+app.get('/', (req, res) => {
+  res.send(`it's alive, it's ALIVE!!!`))
+}
+
 app.post('/signin', signin.handleSignin(knex, bcrypt)) // Signin and register have different syntax of passing function arguments
 
 app.post('/register', (req, res) => { register.handleRegister(req, res, knex, bcrypt) }) //dependency injection
@@ -120,7 +124,7 @@ app.post('/imageurl', (req, res) => { image.handleApiCall(req, res) })
 
 // process.env.PORT - for heroku
 app.listen(process.env.PORT || 3000, () => {
-  console.log('app is running on port 3000');
+  console.log('app is running on port ${process.env.PORT}');
 })
 
 /*
