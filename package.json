@@ -5,7 +5,10 @@
   "main": "server.js",
   "scripts": {
     /* "start": "nodemon server.js" - not working with heroku*/
+<<<<<<< HEAD
     "start": "node src/server.js"
+=======
+>>>>>>> 840e705c5ddb7dac7123cc64346d16797591626d
   },
   "keywords": [],
   "author": "",
