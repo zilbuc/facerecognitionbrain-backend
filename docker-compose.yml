@@ -1,0 +1,33 @@
+version: '3.7'
+
+services:
+
+  # Backend API
+  skulldb-api:
+    container_name: backend
+    # image: node:lts  // alternatively we can use existing docker file:
+    build: ./
+    command: npm start
+    working_dir: /usr/src/skulldb-api
+    environment:
+      POSTGRES_URI: postgres://sally:secret@postgres:5432/skulldb-docker
+      # POSTGRES_USER: sally
+      # POSTGRES_PASSWORD: secret
+      # POSTGRES_DB: skulldb-docker
+      # POSTGRES_HOST: postgres
+    ports:
+      - "3000:3000"
+    # allows changes in PC to be directly 'passed' to running container:
+    volumes:
+      - ./:/usr/src/skulldb-api
+
+  # Postgres
+  postgres:
+    environment:
+      POSTGRES_USER: sally
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: skulldb-docker
+      POSTGRES_HOST: postgres
+    build: ./postgres
+    ports:
+      - "5434:5432"

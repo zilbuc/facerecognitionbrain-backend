@@ -2,27 +2,33 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt-nodejs');
 const cors = require('cors');
+const morgan = require('morgan');
+const { DB_PASSWD } = require('./controllers/constants');
 const knex = require('knex')({
   client: 'pg',
-  connection: {
-    connectionString: process.env.DATABASE_URL,
-    ssl: true
-    // For localhost:
-    // host: '127.0.0.1'
-    // user: 'postgres',
-    // password: '',
-    // database: 'skulldb'
-  }
+  // connection: {
+  //   // connectionString: process.env.DATABASE_URL,
+  //   // ssl: true
+  //   // For localhost:
+  //   // host: '127.0.0.1',
+  //   // user: 'postgres',
+  //   // password: DB_PASSWD,
+  //   // database: 'skulldb'
+  // }
+  // For DOCKER:
+  connection: process.env.POSTGRES_URI
 });
-const register = require('./controllers/register')
-const signin = require('./controllers/signin')
-const profile = require('./controllers/profile')
-const image = require('./controllers/image')
+
+const register = require('./controllers/register');
+const signin = require('./controllers/signin');
+const profile = require('./controllers/profile');
+const image = require('./controllers/image');
 
 const app = express();
 
 app.use(bodyParser.json());
 app.use(cors());
+app.use(morgan('combined'));
 
 /* First demo
 const database = {
@@ -113,7 +119,7 @@ app.put('/image', (req, res) => {
 // })
 
 app.get('/', (req, res) => {
-  res.send(`it's alive, it's ALIVE!!!`)}
+  res.send(`it's alive, it's ALIVE!!! - weeeeee`)}
 )
 
 app.post('/signin', signin.handleSignin(knex, bcrypt)) // Signin and register have different syntax of passing function arguments
@@ -127,7 +133,11 @@ app.post('/imageurl', (req, res) => { image.handleApiCall(req, res) })
 
 // process.env.PORT - for heroku
 app.listen(process.env.PORT || 3000, () => {
-  console.log('app is running on port ${process.env.PORT}');
+  if (process.env.PORT) {
+    console.log(`app is running on port ${process.env.PORT}`);
+  } else {
+    console.log(`app is running on port 3000`);
+  }
 })
 
 /*
