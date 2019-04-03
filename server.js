@@ -3,7 +3,6 @@ const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt-nodejs');
 const cors = require('cors');
 const morgan = require('morgan');
-const { DB_PASSWD } = require('./controllers/constants');
 const knex = require('knex')({
   client: 'pg',
   // connection: {
@@ -23,6 +22,7 @@ const register = require('./controllers/register');
 const signin = require('./controllers/signin');
 const profile = require('./controllers/profile');
 const image = require('./controllers/image');
+const auth = require('./controllers/authorization');
 
 const app = express();
 
@@ -122,14 +122,14 @@ app.get('/', (req, res) => {
   res.send(`it's alive, it's ALIVE!!! - weeeeee`)}
 )
 
-app.post('/signin', signin.handleSignin(knex, bcrypt)) // Signin and register have different syntax of passing function arguments
+app.post('/signin', signin.signinAuthentication(knex, bcrypt)) // Signin and register have different syntax of passing function arguments
 
 app.post('/register', (req, res) => { register.handleRegister(req, res, knex, bcrypt) }) //dependency injection
 
-app.get('/profile/:id', (req, res) => { profile.handleProfileGet(req, res, knex) })
-
-app.put('/image', (req, res) => { image.handleImagePut(req, res, knex) })
-app.post('/imageurl', (req, res) => { image.handleApiCall(req, res) })
+app.get('/profile/:id', auth.requireAuth, (req, res) => { profile.handleProfileGet(req, res, knex) });
+app.post('/profile/:id', auth.requireAuth, (req, res) => { profile.handleProfileUpdate(req, res, knex) });
+app.put('/image', auth.requireAuth, (req, res) => { image.handleImagePut(req, res, knex) });
+app.post('/imageurl', auth.requireAuth, (req, res) => { image.handleApiCall(req, res) });
 
 // process.env.PORT - for heroku
 app.listen(process.env.PORT || 3000, () => {
